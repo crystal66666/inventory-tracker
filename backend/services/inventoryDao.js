@@ -1,6 +1,7 @@
 const debug = require('debug')('backend:db');
 const sqlite3 = require('better-sqlite3');
 const schemas = require('../models/inventory')
+const seedData = require('../data/seedData');
 
 class InventoryDao {
   constructor() {
@@ -10,14 +11,11 @@ class InventoryDao {
     if (!this.db) {
       this.db = new sqlite3(':memory:');
       debug('DB connection opened.');
-      this.db.exec(schemas.skuSchema);
       this.db.exec(schemas.inventorySchema);
       debug('Tables created successfully.')
-      const info = this.db.prepare('INSERT INTO sku (name) VALUES (?)').run('stuff');
-      debug(`Inserted ${info.changes} rows`);
-      const result = this.db.prepare('SELECT * FROM sku').get();
-      debug(result.id);
-      debug(result.name);
+
+      // For demo purposes, we seed the table with some initial data
+      for (const elem of seedData) this.add(elem.name, elem.quantity);
     }
   }
   close() {
@@ -27,18 +25,24 @@ class InventoryDao {
       debug('DB connection closed.');
     }
   }
-  listInventory() {
-    if (this.db) {
-      //const result = this.db.prepare('SELECT * FROM inventory')
+  list() {
+    return this.db.prepare('SELECT * FROM inventory').all();
+  }
+  add(name, quantity) {
+    const info = this.db.prepare('INSERT INTO inventory (name, quantity) VALUES (?, ?)').run(name, quantity);
+    return info.changes;
+  }
+  update(id, field, value) {
+    field = field.toLowerCase();
+    if (field !== 'name' && field !== 'quantity') {
+      throw `Unknown field ${field}`;
     }
+    const info = this.db.prepare('UPDATE inventory SET ' + field + ' = ? WHERE id = ?').run(value, id);
+    return info.changes;
   }
-  listSkus() {
-    return this.db.prepare('SELECT * FROM sku').all();
-  }
-  addSkus(skus) {
-    const placeholders = skus.map((sku) => '(?)').join(',');
-    const info = this.db.prepare('INSERT INTO sku (name) VALUES ' + placeholders).run(skus);
-    debug(`Inserted ${info.changes} rows into sku table.`);
+  delete(id) {
+    const info = this.db.prepare('DELETE FROM inventory WHERE id = ?').run(id);
+    return info.changes;
   }
 }
 

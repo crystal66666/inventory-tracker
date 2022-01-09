@@ -2,11 +2,37 @@ extends layout
 
 block content
   script.
+    function renderTable(data) {
+      const table = document.getElementById('inventoryTable');
+      data.forEach((entry) => {
+        const row = table.insertRow();
+        row.insertCell().appendChild(document.createTextNode(entry.id));
+        row.insertCell().appendChild(document.createTextNode(entry.name));
+      });
+    }
     function getSkus() {
       fetch("/inventory/getSkus")
         .then(res => res.json())
-        .then(res => {document.getElementById('foo').textContent = JSON.stringify(res);});
+        .then(res => {
+          renderTable(res);
+        });
+    }
+    function addSkus(skus) {
+      console.log(skus);
+      fetch("/inventory/addSkus", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            skus: skus
+          })
+      })
+        .then(res => res.text())
+        .then(data => {console.log(data);})
+        .catch(err => {console.error('Error:', err)});
     }
   h1= title
-  #foo Hulu
   button(onClick='getSkus()') Get Skus
+  button(onClick='addSkus(["bar", "baz"])') Add Skus
+  table(id='inventoryTable')
