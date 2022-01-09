@@ -4,13 +4,7 @@ const inventoryDao = require('../services/inventoryDao');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.send('Yay!');
-});
-
-router.post('/addSkus', function(req, res, next) {
-  const {skus} = req.body;
-  inventoryDao.addSkus(skus);
-  //res.send();
+  res.render('index', { title: 'Express' });
 });
 
 module.exports = router;

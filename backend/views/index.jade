@@ -1,5 +1,12 @@
 extends layout
 
 block content
+  script.
+    function getSkus() {
+      fetch("/inventory/getSkus")
+        .then(res => res.json())
+        .then(res => {document.getElementById('foo').textContent = JSON.stringify(res);});
+    }
   h1= title
-  p Welcome to #{title}
+  #foo Hulu
+  button(onClick='getSkus()') Get Skus

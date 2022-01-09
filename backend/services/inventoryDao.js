@@ -1,5 +1,5 @@
 const debug = require('debug')('backend:db');
-const sqlite3 = require('sqlite3');
+const sqlite3 = require('better-sqlite3');
 const schemas = require('../models/inventory')
 
 class InventoryDao {
@@ -8,47 +8,37 @@ class InventoryDao {
   }
   init() {
     if (!this.db) {
-      this.db = new sqlite3.Database(':memory:', (err) => {
-        if (err) {
-          this.db = null;
-          throw `Failed to create DB: ${err.message}`;
-        }
-        debug('DB connection opened.');
-        this.db.run(schemas.skuSchema, (err) => {
-          if (err) {
-            throw `Failed to create sku table: ${err.message}`;
-          }
-          this.db.run(schemas.inventorySchema, (err) => {
-            if (err) {
-              throw `Failed to create inventory table: ${err.message}`;
-            }
-          });
-        });
-        debug('Tables created successfully.')
-      });
+      this.db = new sqlite3(':memory:');
+      debug('DB connection opened.');
+      this.db.exec(schemas.skuSchema);
+      this.db.exec(schemas.inventorySchema);
+      debug('Tables created successfully.')
+      const info = this.db.prepare('INSERT INTO sku (name) VALUES (?)').run('stuff');
+      debug(`Inserted ${info.changes} rows`);
+      const result = this.db.prepare('SELECT * FROM sku').get();
+      debug(result.id);
+      debug(result.name);
     }
   }
   close() {
     if (this.db) {
-      this.db.close((err) => {
-        if (err) {
-          throw `Failed to close DB: ${err.message}`;
-        }
-        this.db = null;
-        debug('DB connection closed.');
-      });
+      this.db.close();
+      this.db = null;
+      debug('DB connection closed.');
     }
   }
-  addSkus(skus) {
+  listInventory() {
     if (this.db) {
-      const placeholders = skus.map((sku) => '(?)').join(',');
-      this.db.run('INSERT INTO sku VALUES ' + placeholders, skus, (err) => {
-        if (err) {
-          throw `Failed to add skus ${skus}: ${err.message}`;
-        }
-        debug(`Inserted ${this.changes} rows into sku table.`)
-      });
+      //const result = this.db.prepare('SELECT * FROM inventory')
     }
+  }
+  listSkus() {
+    return this.db.prepare('SELECT * FROM sku').all();
+  }
+  addSkus(skus) {
+    const placeholders = skus.map((sku) => '(?)').join(',');
+    const info = this.db.prepare('INSERT INTO sku (name) VALUES ' + placeholders).run(skus);
+    debug(`Inserted ${info.changes} rows into sku table.`);
   }
 }
 
