@@ -37,25 +37,25 @@ class InventoryDao {
     field = field.toLowerCase();
     let stmt;
     if (field === 'name') {
-      stmt = this.db.prepare('UPDATE inventory SET name = ?, lastUpdated = ? WHERE id = ?');
+      stmt = this.db.prepare('UPDATE inventory SET name = ?, lastUpdated = ? WHERE id = ? AND status = ?');
     } else if (field === 'quantity') {
-      stmt = this.db.prepare('UPDATE inventory SET quantity = ?, lastUpdated = ? WHERE id = ?');
+      stmt = this.db.prepare('UPDATE inventory SET quantity = ?, lastUpdated = ? WHERE id = ? AND status = ?');
     } else {
       throw `Unknown field ${field}`;
     }
-    const info = stmt.run(value, Date.now(), id);
+    const info = stmt.run(value, Date.now(), id, 'valid');
     return info.changes;
   }
   delete(id, comments) {
     let info;
     if (!comments) comments = '';
-    info = this.db.prepare('UPDATE inventory SET status = ?, lastUpdated = ?, comments = ? WHERE id = ?')
-          .run('deleted', Date.now(), comments, id);
+    info = this.db.prepare('UPDATE inventory SET status = ?, lastUpdated = ?, comments = ? WHERE id = ? AND status = ?')
+          .run('deleted', Date.now(), comments, id, 'valid');
     return info.changes;
   }
   undelete(id) {
-    const info = this.db.prepare('UPDATE inventory SET status = ?, lastUpdated = ? WHERE id = ?')
-        .run('valid', Date.now(), id);
+    const info = this.db.prepare('UPDATE inventory SET status = ?, lastUpdated = ? WHERE id = ? AND status = ?')
+        .run('valid', Date.now(), id, 'deleted');
     return info.changes;
   }
 }

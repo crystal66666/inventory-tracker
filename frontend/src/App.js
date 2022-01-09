@@ -11,6 +11,7 @@ function App() {
       <td>{item.id}</td>
       <td>{item.name}</td>
       <td>{item.quantity}</td>
+      <td>{new Date(item.lastUpdated).toLocaleString()}</td>
     </tr>
   );
 
@@ -20,10 +21,11 @@ function App() {
       <td>{item.name}</td>
       <td>{item.quantity}</td>
       <td>{item.comments}</td>
+      <td>{new Date(item.lastUpdated).toLocaleString()}</td>
     </tr>
   );
 
-  const lastUpdatedStr = new Date(lastUpdated).toString();
+  const lastUpdatedStr = new Date(lastUpdated).toLocaleString();
 
   useEffect(() => {
     fetch("http://localhost:9000/inventory/list")
@@ -166,6 +168,7 @@ function App() {
             <th>Id</th>
             <th>Name</th>
             <th>Quantity</th>
+            <th>Last Updated</th>
           </tr>
         </thead>
         <tbody>
@@ -175,6 +178,9 @@ function App() {
       <h2>
         Deleted table
       </h2>
+      <div>
+        May opt to permanently delete these every X days
+      </div>
       <table className='basic-table'>
         <thead>
           <tr>
@@ -182,6 +188,7 @@ function App() {
             <th>Name</th>
             <th>Quantity</th>
             <th>Comments</th>
+            <th>Last Updated</th>
           </tr>
         </thead>
         <tbody>
