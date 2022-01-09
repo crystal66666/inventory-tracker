@@ -1,4 +1,4 @@
-.inventory-table {
+.basic-table {
   border-collapse: collapse;
   margin: 25px 0;
   font-size: 0.9em;
@@ -7,56 +7,25 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
-.inventory-table thead tr {
+.basic-table thead tr {
   background-color: #2C46A6;
   color: #ffffff;
   text-align: left;
 }
 
-.inventory-table th,
-.inventory-table td {
+.basic-table th,
+.basic-table td {
     padding: 12px 15px;
 }
 
-.inventory-table tbody tr {
+.basic-table tbody tr {
   border-bottom: 1px solid #d0d0d0;
 }
 
-.inventory-table tbody tr:nth-of-type(even) {
+.basic-table tbody tr:nth-of-type(even) {
   background-color: #f0f0f0;
 }
 
-.inventory-table tbody tr:last-of-type {
+.basic-table tbody tr:last-of-type {
   border-bottom: 2px solid #2C46A6;
-}
-
-.input-table {
-  margin: 25px 0;
-  font-size: 0.9em;
-  font-family: sans-serif;
-  min-width: 400px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-}
-
-.input-table thead tr {
-  background-color: #7180B7;
-  color: #ffffff;
-  text-align: center;
-}
-
-.input-table th,
-.input-table td {
-    padding: 12px 15px;
-}
-
-.input-table tbody tr {
-  border-bottom: 1px solid #d0d0d0;
-}
-
-.input-table tbody tr:nth-of-type(even) {
-  background-color: #f0f0f0;
-}
-
-.input-table tbody tr:last-of-type {
-  border-bottom: 2px solid #7180B7;
 }

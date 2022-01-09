@@ -29,19 +29,33 @@ class InventoryDao {
     return this.db.prepare('SELECT * FROM inventory').all();
   }
   add(name, quantity) {
-    const info = this.db.prepare('INSERT INTO inventory (name, quantity) VALUES (?, ?)').run(name, quantity);
+    const info = this.db.prepare('INSERT INTO inventory (name, quantity, lastUpdated, status) VALUES (?, ?, ?, ?)')
+        .run(name, quantity, Date.now(), 'valid');
     return info.changes;
   }
   update(id, field, value) {
     field = field.toLowerCase();
-    if (field !== 'name' && field !== 'quantity') {
+    let stmt;
+    if (field === 'name') {
+      stmt = this.db.prepare('UPDATE inventory SET name = ?, lastUpdated = ? WHERE id = ?');
+    } else if (field === 'quantity') {
+      stmt = this.db.prepare('UPDATE inventory SET quantity = ?, lastUpdated = ? WHERE id = ?');
+    } else {
       throw `Unknown field ${field}`;
     }
-    const info = this.db.prepare('UPDATE inventory SET ' + field + ' = ? WHERE id = ?').run(value, id);
+    const info = stmt.run(value, Date.now(), id);
     return info.changes;
   }
-  delete(id) {
-    const info = this.db.prepare('DELETE FROM inventory WHERE id = ?').run(id);
+  delete(id, comments) {
+    let info;
+    if (!comments) comments = '';
+    info = this.db.prepare('UPDATE inventory SET status = ?, lastUpdated = ?, comments = ? WHERE id = ?')
+          .run('deleted', Date.now(), comments, id);
+    return info.changes;
+  }
+  undelete(id) {
+    const info = this.db.prepare('UPDATE inventory SET status = ?, lastUpdated = ? WHERE id = ?')
+        .run('valid', Date.now(), id);
     return info.changes;
   }
 }

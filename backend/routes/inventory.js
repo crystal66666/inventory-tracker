@@ -20,8 +20,14 @@ router.post('/update', function(req, res, next) {
 });
 
 router.post('/delete', function(req, res, next) {
+  const {id, comments} = req.body;
+  inventoryDao.delete(id, comments);
+  res.end();
+});
+
+router.post('/undelete', function(req, res, next) {
   const {id} = req.body;
-  inventoryDao.delete(id);
+  inventoryDao.undelete(id);
   res.end();
 });
 
