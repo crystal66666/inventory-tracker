@@ -10,5 +10,6 @@
 - Frontend: React
 
 ## How to run
-1. In a terminal, cd into backend directory and run "npm start". This starts up the server at "http://localhost:9000/".
-2. In a separate terminal, cd into frontend directory and run "npm start". This should open up a browser pointing to the frontend app at "http://localhost:3000/".
+1. Install NodeJS.
+2. In a terminal, cd into backend directory, run "npm install" and run "npm start". This starts up the server at "http://localhost:9000/".
+3. In a separate terminal, cd into frontend directory, run "npm install" and run "npm start". This should open up a browser pointing to the frontend app at "http://localhost:3000/".
