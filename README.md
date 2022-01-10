@@ -2,7 +2,7 @@
 
 ## Features
 - Allows creating, editing, deleting and viewing inventory items.
-- Addition feature: When deleting, allow deletion comments and undeletion
+- Additional feature: When deleting, allow deletion comments and undeletion
 
 ## Tech stack
 - Database: Sqlite in-memory DB for demo purposes
